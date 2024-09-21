@@ -1,5 +1,7 @@
 import yt_dlp
 from fastapi import FastAPI
+from pydantic import BaseModel
+
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -12,15 +14,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
+class YouTubeLink(BaseModel):
+    youtubeLink: str
 
-@app.get("/submit-link/{link}")
-def get_audio(link: str):
-    URLS = [link]
+@app.post("/submit-link")
+def get_audio(link: YouTubeLink):
+    URLS = [link.youtubeLink]
 
     ydl_opts = {
         'format': 'm4a/bestaudio/best',
-        # ℹ️ See help(yt_dlp.postprocessor) for a list of available Postprocessors and their arguments
-        'postprocessors': [{  # Extract audio using ffmpeg
+        'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
         }]
@@ -28,3 +31,5 @@ def get_audio(link: str):
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         error_code = ydl.download(URLS)
+
+    return {"message": "Download started", "youtubeLink": link.youtubeLink}
