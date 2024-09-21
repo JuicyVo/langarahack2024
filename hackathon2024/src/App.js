@@ -1,12 +1,16 @@
 import "./App.css";
 import { DragAndDrop } from "./components/DragAndDrop";
+import { Loading } from "./components/Loading";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
+      <div>
         <DragAndDrop />
-      </header>
+      </div>
+      <div>
+        <Loading />
+      </div>
     </div>
   );
 }
