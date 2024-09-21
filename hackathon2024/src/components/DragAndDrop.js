@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import { FiFilePlus } from "react-icons/fi";
 
 export const DragAndDrop = () => {
@@ -31,17 +32,16 @@ export const DragAndDrop = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Send YouTube link to FastAPI backend
-    const response = await fetch("http://127.0.0.1:8000/submit-link/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ link: youtubeLink }),
-    });
+    try {
+      // Send YouTube link to FastAPI backend using Axios
+      const response = await axios.post("http://127.0.0.1:8000/submit-link/", {
+        link: youtubeLink,
+      });
 
-    const data = await response.json();
-    console.log("Response from backend:", data);
+      console.log("Response from backend:", response.data);
+    } catch (error) {
+      console.error("Error submitting the link:", error);
+    }
   };
 
   return (
