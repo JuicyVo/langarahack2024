@@ -65,3 +65,7 @@ searchSongs('Hello', 'Adele').then(url => {
     console.log(url); // Log the URL if found
   }
 });
+
+// 'Hello', 'Adele' would bring up
+//https://genius.com/Kidz-bop-kids-hello-adele-lyrics as a response
+
