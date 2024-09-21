@@ -45,7 +45,7 @@ export const DragAndDrop = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
+    <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen bg-red-900">
       <h1 className="text-2xl font-bold mb-6">Drag and Drop YouTube Link</h1>
 
       <div
