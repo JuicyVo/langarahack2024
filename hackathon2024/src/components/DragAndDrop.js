@@ -28,6 +28,22 @@ export const DragAndDrop = () => {
     setYoutubeLink(e.target.value);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Send YouTube link to FastAPI backend
+    const response = await fetch("http://127.0.0.1:8000/submit-link/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ link: youtubeLink }),
+    });
+
+    const data = await response.json();
+    console.log("Response from backend:", data);
+  };
+
   return (
     <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-6">Drag and Drop YouTube Link</h1>
@@ -53,6 +69,12 @@ export const DragAndDrop = () => {
         onChange={handleInputChange}
         className="w-80 p-2 border border-gray-300 rounded-md text-gray-700 placeholder-gray-400"
       />
+      <button
+        onClick={handleSubmit}
+        className="bg-blue-500 text-white p-2 rounded-md"
+      >
+        Submit Link
+      </button>
     </div>
   );
 };
