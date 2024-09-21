@@ -5,6 +5,10 @@ import { FiFilePlus } from "react-icons/fi";
 export const DragAndDrop = () => {
   // State to store the YouTube link
   const [youtubeLink, setYoutubeLink] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const toggleLoading = () => {
+    isLoading ? setIsLoading(false) : setIsLoading(true);
+  };
 
   // Handler for dropping the link
   const handleDrop = (e) => {
@@ -31,6 +35,7 @@ export const DragAndDrop = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    toggleLoading();
 
     try {
       // Send YouTube link to FastAPI backend using Axios

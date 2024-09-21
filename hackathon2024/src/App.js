@@ -8,9 +8,6 @@ function App() {
       <div>
         <DragAndDrop />
       </div>
-      <div>
-        <Loading />
-      </div>
     </div>
   );
 }
