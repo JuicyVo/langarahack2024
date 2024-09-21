@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { FiFilePlus } from "react-icons/fi";
 
-
 export const DragAndDrop = () => {
   // State to store the YouTube link
   const [youtubeLink, setYoutubeLink] = useState("");
@@ -30,18 +29,20 @@ export const DragAndDrop = () => {
   };
 
   return (
-    <div className="app">
-      <h1>Drag and Drop YouTube Link</h1>
+    <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-2xl font-bold mb-6">Drag and Drop YouTube Link</h1>
 
       <div
-        className="drop-area"
+        className="w-80 p-6 border-2 border-dashed border-gray-500 bg-white rounded-md text-center mb-6"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
       >
         {youtubeLink ? (
-          <p>Link saved: {youtubeLink}</p>
+          <p className="text-gray-700">Link saved: {youtubeLink}</p>
         ) : (
-          <p>Drag a YouTube link here or input manually below.</p>
+          <p className="text-gray-400">
+            Drag a YouTube link here or input manually below.
+          </p>
         )}
       </div>
 
@@ -50,7 +51,7 @@ export const DragAndDrop = () => {
         placeholder="Enter YouTube link manually"
         value={youtubeLink}
         onChange={handleInputChange}
-        className="youtube-input"
+        className="w-80 p-2 border border-gray-300 rounded-md text-gray-700 placeholder-gray-400"
       />
     </div>
   );
