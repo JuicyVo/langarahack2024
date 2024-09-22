@@ -1,11 +1,12 @@
 export const Loading = () => {
   return (
-    <div className="absolute right-1/2 bottom-1/2 transform translate-x-1/2 translate-y-1/2">
-      <div className="p-4 bg-gradient-to-tr animate-spin from-green-500 to-blue-500 via-purple-500 rounded-full">
-        <div className="bg-white rounded-full">
+    <div className="flex flex-col gap-4">
+      <div className="p-4 bg-gradient-to-tr animate-spin from-primary to-secondary via-primary-light rounded-full">
+        <div className="bg-secondary rounded-full">
           <div className="w-24 h-24 rounded-full"></div>
         </div>
       </div>
+      <p className="text-gray-500 text-lg" >Loading...</p>
     </div>
   );
 };
