@@ -1,112 +1,54 @@
-const https = require('https');
 const axios = require('axios');
+const { load } = require('cheerio');
 
-const cheerio = require('cheerio');
+const accessToken = "vYcNHxDp7Xss4sCYb1POO8NmLgqiVg49npa2YE8U4HKCaaOvNkktTGtqGcAl8XRc";
 
-const accessToken = "uUcQHmNpRI3Z1tnGvraxDAt3HlaFVJuFENEs_5BKsnKUp6zGGbdYq-S7ZOLoXpRW";
 async function searchSongs(songName, artistName) {
   const songTitle = `${songName} by ${artistName}`;
   console.log(`Searching for "${songTitle}"...`);
-  const options = {
-      hostname: 'api.genius.com',
-      path: `/search?q=${encodeURIComponent(songTitle)}`,
-      method: 'GET',
-      headers: {
-          'Authorization': `Bearer ${accessToken}`
-      }
-  };
 
-  return new Promise((resolve, reject) => {
-      https.get(options, (res) => {
-          console.log(`Response status code: ${res.statusCode}`);
-          let data = '';
+  const url = `https://api.genius.com/search?q=${encodeURIComponent(songTitle)}`;
 
-          res.on('data', (chunk) => {
-              data += chunk;
-          });
-
-          res.on('end', () => {
-              // console.log('Raw response data:', data);
-              const response = JSON.parse(data);
-              const hits = response.response.hits;
-
-              if (hits.length === 0) {
-                  console.log(`No results found for "${songTitle}".`);
-                  resolve(null);
-                  return;
-              }
-
-              let foundUrl = null;
-
-              for (const hit of hits) {
-                  const fullTitle = hit.result.full_title;
-
-                  if (
-                      fullTitle.toLowerCase().includes(songName.toLowerCase()) &&
-                      fullTitle.toLowerCase().includes(artistName.toLowerCase()) &&
-                      !fullTitle.toLowerCase().includes('cover') &&
-                      !fullTitle.toLowerCase().includes('translation') &&
-                      !fullTitle.toLowerCase().includes('annotated') &&
-                      !fullTitle.toLowerCase().includes('album') &&
-                      
-                      
-                      !fullTitle.toLowerCase().includes('kidz bop') &&
-                      !fullTitle.toLowerCase().includes('genius')
-                  ) {
-                      foundUrl = hit.result.url;
-                      break;
-                  }
-              }
-
-              if (foundUrl) {
-                  resolve(foundUrl);
-              } else {
-                  console.log(`No matching official song found for "${songTitle}".`);
-                  resolve(null);
-              }
-          });
-      }).on('error', (e) => {
-          console.error('Error:', e);
-          reject(e);
-      });
-  });
-}
-async function extractLyrics(url) {
   try {
-    const response = await axios.get(url); // Fetch page content using Axios
-    const $ = cheerio.load(response.data); // Load HTML into Cheerio
+    const response = await axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
 
-    const lyricsContainer = $('[data-lyrics-container="true"]'); // Select lyrics container
+    const hits = response.data.response.hits;
 
-    // Replace <br> with newline for proper formatting
-    $("br", lyricsContainer).replaceWith("\n");
+    if (hits.length === 0) {
+      console.log(`No results found for "${songTitle}".`);
+      return null;
+    }
 
-    // Replace <a> tags with their text contents
-    $("a", lyricsContainer).replaceWith((_i, el) => $(el).text());
+    let foundUrl = null;
 
-    // Extract plain text from the lyrics container
-    return lyricsContainer.text().trim();
+    for (const hit of hits) {
+      const fullTitle = hit.result.full_title;
+
+      if (
+        fullTitle.toLowerCase().includes(songName.toLowerCase()) &&
+        fullTitle.toLowerCase().includes(artistName.toLowerCase()) &&
+        !fullTitle.toLowerCase().includes('cover') &&
+        !fullTitle.toLowerCase().includes('translation') &&
+        !fullTitle.toLowerCase().includes('annotated') &&
+        !fullTitle.toLowerCase().includes('album') &&
+        !fullTitle.toLowerCase().includes('kidz bop') &&
+        !fullTitle.toLowerCase().includes('genius')
+      ) {
+        foundUrl = hit.result.url;
+        break;
+      }
+    }
+
+    return foundUrl ? foundUrl : null;
+
   } catch (error) {
-    console.error('Error extracting lyrics:', error);
+    console.error('Error searching songs:', error);
     return null;
   }
 }
 
-searchSongs('Hello', 'Adele')
-  .then(url => {
-    if (url) {
-      console.log('Found URL:', url); // Log the Genius song URL if found
-      return extractLyrics(url); // Extract lyrics from the found URL
-    } else {
-      console.log('No URL found.');
-      return null;
-    }
-  })
-  .then(lyrics => {
-    if (lyrics) {
-      console.log('Lyrics:', lyrics); // Log the extracted lyrics
-    }
-  })
-  .catch(error => {
-    console.error('An error occurred:', error);
-  });
+module.exports = { searchSongs };
