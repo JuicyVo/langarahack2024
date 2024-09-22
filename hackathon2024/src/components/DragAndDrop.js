@@ -1,9 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 // If Loading.js and InputComponent.js use named exports:
-import { Loading } from './Loading.js';  // Use named import
-import { InputComponent } from './InputComponent.js'; // Use named import
-
+import { Loading } from "./Loading.js"; // Use named import
+import { InputComponent } from "./InputComponent.js"; // Use named import
 
 export const DragAndDrop = () => {
   const [youtubeLink, setYoutubeLink] = useState("");
@@ -47,8 +46,6 @@ export const DragAndDrop = () => {
           mode: "no-cors",
           headers: {
             "Access-Control-Allow-Origin": "*",
-            Accept: "application/json",
-            "Content-Type": "application/json",
           },
         }
       );
