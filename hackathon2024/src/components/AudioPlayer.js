@@ -18,15 +18,20 @@ export const AudioPlayer = ({ src }) => {
   };
 
   return (
-    <div className="audio-player">
+    <div className="flex flex-col items-center bg-gray-800 p-4 rounded-lg shadow-lg">
       <audio
         ref={audioRef}
         src={src}
         onTimeUpdate={handleTimeUpdate}
         preload="metadata"
       />
-      <button onClick={togglePlayPause}>{isPlaying ? "Pause" : "Play"}</button>
-      <div>
+      <div className="flex items-center space-x-4">
+        <button
+          onClick={togglePlayPause}
+          className="bg-primary text-white py-2 px-4 rounded hover:bg-primary-dark transition"
+        >
+          {isPlaying ? "Pause" : "Play"}
+        </button>
         <input
           type="range"
           min="0"
@@ -35,6 +40,7 @@ export const AudioPlayer = ({ src }) => {
           onChange={(e) => {
             audioRef.current.currentTime = e.target.value;
           }}
+          className="w-full h-2 bg-gray-600 rounded appearance-none cursor-pointer"
         />
       </div>
     </div>
