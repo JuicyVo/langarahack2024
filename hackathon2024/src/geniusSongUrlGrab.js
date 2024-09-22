@@ -51,4 +51,25 @@ async function searchSongs(songName, artistName) {
   }
 }
 
-module.exports = { searchSongs };
+async function extractLyrics(url) {
+  try {
+    const response = await axios.get(url); // Fetch page content using Axios
+    const $ = load(response.data); // Load HTML into Cheerio
+
+    const lyricsContainer = $('[data-lyrics-container="true"]'); // Select lyrics container
+
+    // Replace <br> with newline for proper formatting
+    $("br", lyricsContainer).replaceWith("\n");
+
+    // Replace <a> tags with their text contents
+    $("a", lyricsContainer).replaceWith((_i, el) => $(el).text());
+
+    // Extract plain text from the lyrics container
+    return lyricsContainer.text().trim();
+  } catch (error) {
+    console.error('Error extracting lyrics:', error);
+    return null;
+  }
+}
+
+module.exports = { searchSongs, extractLyrics };
