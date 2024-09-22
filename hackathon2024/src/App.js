@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { searchSongs, extractLyrics } from "./geniusSongUrlGrab"; // Ensure this matches the file name
-import { DragAndDrop } from "./components/DragAndDrop";
+import axios from "axios";
+import { DragAndDrop } from "./components/DragAndDrop.js";
 
 import "./App.css";
 
@@ -12,16 +12,26 @@ function App() {
   useEffect(() => {
     const searchForHello = async () => {
       setLoading(true);
-      const url = await searchSongs("Hello", "Adele");
-      if (url) {
-        const fetchedLyrics = await extractLyrics(url);
-        setLyrics(fetchedLyrics);
+      
+      try {
+        const response = await axios.get(`http://localhost:5001/search?songName=Hello&artistName=Adele`);
+        
+        if (response.data) {
+          const { songUrl, lyrics } = response.data;
+          setLyrics(lyrics || "No lyrics found.");
+        } else {
+          setLyrics("No URL found.");
+        }
+      } catch (error) {
+        console.error("Error fetching song:", error);
+        setLyrics("Error fetching lyrics.");
       }
+      
       setLoading(false);
     };
-    
-    searchForHello();
-  }, []);
+  
+    searchForHello(); // Call it once
+  }, []); // Empty dependency array to run only on mount
 
   return (
     <div className="App">
@@ -32,4 +42,4 @@ function App() {
   );
 }
 
-export default App; // Make sure this line is present
+export default App;
