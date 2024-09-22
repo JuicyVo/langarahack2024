@@ -73,7 +73,7 @@ export const DragAndDrop = () => {
 
   return (
     <div className="mx-auto flex flex-col items-center p-6 bg-secondary min-h-screen justify-center">
-      {isLoading ? (
+      {/* {isLoading ? (
         <Loading />
       ) : isDisplaying ? (
         <AudioPlayer src={audioSrc} />
@@ -86,8 +86,8 @@ export const DragAndDrop = () => {
           handleDragOver={handleDragOver}
           handleSubmit={handleSubmit}
         />
-      )}
-      {/* <InputComponent
+      )} */}
+      <InputComponent
         youtubeLink={youtubeLink}
         handleInputChange={handleInputChange}
         handleDrop={handleDrop}
@@ -95,7 +95,7 @@ export const DragAndDrop = () => {
         handleSubmit={handleSubmit}
       />
       <Loading />
-      <AudioPlayer src={audioSrc} /> */}
+      <AudioPlayer src={audioSrc} />
     </div>
   );
 };
