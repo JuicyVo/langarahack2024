@@ -18,8 +18,8 @@ app.add_middleware(
 class YouTubeLink(BaseModel):
     youtubeLink: str
 
-# Specify the relative path for saving MP3 files
-VIDEOS_FOLDER = "../hackathon2024/public/videos"
+# Specify the path for saving MP3 files (local, not in public)
+VIDEOS_FOLDER = "/tmp/youtube_audio"
 
 # Ensure the videos folder exists
 os.makedirs(VIDEOS_FOLDER, exist_ok=True)
