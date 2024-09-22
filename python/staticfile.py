@@ -1,6 +1,7 @@
 import yt_dlp
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -18,11 +19,14 @@ app.add_middleware(
 class YouTubeLink(BaseModel):
     youtubeLink: str
 
-# Specify the path for saving MP3 files (local, not in public)
-VIDEOS_FOLDER = "/tmp/youtube_audio"
+# Specify the path for saving MP3 files
+VIDEOS_FOLDER = "./downloads"
 
 # Ensure the videos folder exists
 os.makedirs(VIDEOS_FOLDER, exist_ok=True)
+
+# Mount the downloads directory
+app.mount("/downloads", StaticFiles(directory=VIDEOS_FOLDER), name="downloads")
 
 @app.post("/submit-link")
 def get_audio(link: YouTubeLink):
@@ -41,15 +45,9 @@ def get_audio(link: YouTubeLink):
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(URLS[0], download=True)
             filename = ydl.prepare_filename(info).rsplit(".", 1)[0] + ".mp3"
+            relative_path = os.path.relpath(filename, VIDEOS_FOLDER)
+            file_url = f"/downloads/{relative_path}"
             
-        return {"message": "Download completed", "filename": os.path.basename(filename)}
+        return JSONResponse(content={"message": "Download completed", "file_url": file_url})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/audio/{filename}")
-async def get_audio_file(filename: str):
-    file_path = os.path.join(VIDEOS_FOLDER, filename)
-    if os.path.exists(file_path):
-        return FileResponse(file_path, media_type="audio/mpeg", filename=filename)
-    else:
-        raise HTTPException(status_code=404, detail="File not found")
