@@ -1,49 +1,24 @@
-const axios = require('axios');
-const { load } = require('cheerio');
+import axios from 'axios';
+import { load } from 'cheerio';
 
-const accessToken = "vYcNHxDp7Xss4sCYb1POO8NmLgqiVg49npa2YE8U4HKCaaOvNkktTGtqGcAl8XRc";
+const accessToken = "qc6QdLcSdIaWxuxfFbfI36gbYlkxIbM4Yr2QAyAxY5F_GdwRiqge4ASD-CuFzy8y";
 
-async function searchSongs(songName, artistName) {
+export async function searchSongs(songName, artistName) {
   const songTitle = `${songName} by ${artistName}`;
   console.log(`Searching for "${songTitle}"...`);
 
-  const url = `https://api.genius.com/search?q=${encodeURIComponent(songTitle)}`;
+  const url = `http://localhost:5001/search?songName=${encodeURIComponent(songName)}&artistName=${encodeURIComponent(artistName)}`;
 
   try {
-    const response = await axios.get(url, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      },
-    });
+    const response = await axios.get(url); // Fetch from your Express server
 
-    const hits = response.data.response.hits;
-
-    if (hits.length === 0) {
-      console.log(`No results found for "${songTitle}".`);
+    if (!response.data || !response.data.lyrics) {
+      console.error(`No valid response for "${songTitle}".`);
       return null;
     }
 
-    let foundUrl = null;
-
-    for (const hit of hits) {
-      const fullTitle = hit.result.full_title;
-
-      if (
-        fullTitle.toLowerCase().includes(songName.toLowerCase()) &&
-        fullTitle.toLowerCase().includes(artistName.toLowerCase()) &&
-        !fullTitle.toLowerCase().includes('cover') &&
-        !fullTitle.toLowerCase().includes('translation') &&
-        !fullTitle.toLowerCase().includes('annotated') &&
-        !fullTitle.toLowerCase().includes('album') &&
-        !fullTitle.toLowerCase().includes('kidz bop') &&
-        !fullTitle.toLowerCase().includes('genius')
-      ) {
-        foundUrl = hit.result.url;
-        break;
-      }
-    }
-
-    return foundUrl ? foundUrl : null;
+    // Return both the song URL and the lyrics
+    return { url: response.data.songUrl, lyrics: response.data.lyrics };
 
   } catch (error) {
     console.error('Error searching songs:', error);
@@ -51,7 +26,9 @@ async function searchSongs(songName, artistName) {
   }
 }
 
-async function extractLyrics(url) {
+
+
+export async function extractLyrics(url) {
   try {
     const response = await axios.get(url); // Fetch page content using Axios
     const $ = load(response.data); // Load HTML into Cheerio
@@ -71,5 +48,3 @@ async function extractLyrics(url) {
     return null;
   }
 }
-
-module.exports = { searchSongs, extractLyrics };
