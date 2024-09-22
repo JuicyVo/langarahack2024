@@ -13,6 +13,10 @@ export const DragAndDrop = () => {
     isLoading ? setIsLoading(false) : setIsLoading(true);
   };
 
+  const toggleDisplaying = () => {
+    isLoading ? setIsDisplaying(false) : setIsDisplaying(true);
+  };
+
   const handleDrop = (e) => {
     e.preventDefault();
     const data = e.dataTransfer.getData("text");
@@ -51,9 +55,11 @@ export const DragAndDrop = () => {
       );
 
       console.log("Response from backend:", response);
-      setIsDisplaying(true);
+      toggleDisplaying();
     } catch (error) {
       console.error("Error submitting the link:", error);
+    } finally {
+      toggleLoading(); // Stop loading after the request completes (whether success or error)
     }
   };
 
@@ -68,7 +74,7 @@ export const DragAndDrop = () => {
         <Loading />
       ) : isDisplaying ? (
         // <DisplayComponent onReset={handleReset} />
-        <div></div>
+        <div>Successfull</div>
       ) : (
         // InputComponent for entering or dropping the YouTube link
         <InputComponent
