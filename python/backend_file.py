@@ -4,7 +4,6 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import os
-import shutil
 
 app = FastAPI()
 
@@ -19,10 +18,11 @@ app.add_middleware(
 class YouTubeLink(BaseModel):
     youtubeLink: str
 
-FINISHED_FOLDER = "finished"
+# Specify the relative path for saving MP3 files
+VIDEOS_FOLDER = "../hackathon2024/public/videos"
 
-# Ensure the finished folder exists
-os.makedirs(FINISHED_FOLDER, exist_ok=True)
+# Ensure the videos folder exists
+os.makedirs(VIDEOS_FOLDER, exist_ok=True)
 
 @app.post("/submit-link")
 def get_audio(link: YouTubeLink):
@@ -34,7 +34,7 @@ def get_audio(link: YouTubeLink):
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
         }],
-        'outtmpl': os.path.join(FINISHED_FOLDER, '%(title)s.%(ext)s')
+        'outtmpl': os.path.join(VIDEOS_FOLDER, '%(title)s.%(ext)s')
     }
 
     try:
@@ -48,7 +48,7 @@ def get_audio(link: YouTubeLink):
 
 @app.get("/audio/{filename}")
 async def get_audio_file(filename: str):
-    file_path = os.path.join(FINISHED_FOLDER, filename)
+    file_path = os.path.join(VIDEOS_FOLDER, filename)
     if os.path.exists(file_path):
         return FileResponse(file_path, media_type="audio/mpeg", filename=filename)
     else:
