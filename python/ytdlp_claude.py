@@ -30,8 +30,7 @@ async def get_audio(link: YouTubeLink):
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
                 'preferredquality': '192',
-            }],
-            'outtmpl': os.path.join(temp_dir, '%(title)s.%(ext)s'),
+            }]
         }
 
         try:
