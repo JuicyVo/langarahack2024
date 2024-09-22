@@ -47,7 +47,7 @@ export const DragAndDrop = () => {
         }
       );
 
-      console.log("Response from backend:", response.data.file_url);
+      console.log("Response from backend:", response);
       setAudioSrc(`http://127.0.0.1:8000${response.data.file_url}`);
     } catch (error) {
       console.error("Error submitting the link:", error);
