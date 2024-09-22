@@ -1,7 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
-import { Loading } from "./Loading";
-import { InputComponent } from "./InputComponent";
+// If Loading.js and InputComponent.js use named exports:
+import { Loading } from './Loading.js';  // Use named import
+import { InputComponent } from './InputComponent.js'; // Use named import
+
 
 export const DragAndDrop = () => {
   const [youtubeLink, setYoutubeLink] = useState("");
