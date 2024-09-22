@@ -1,13 +1,10 @@
 import yt_dlp
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import StreamingResponse
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-import io
-import logging
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+import os
+import tempfile
 
 app = FastAPI()
 
@@ -26,54 +23,33 @@ class YouTubeLink(BaseModel):
 async def get_audio(link: YouTubeLink):
     URLS = [link.youtubeLink]
 
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-        'outtmpl': '%(title)s.%(ext)s',
-    }
+    with tempfile.TemporaryDirectory() as temp_dir:
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }],
+            'outtmpl': os.path.join(temp_dir, '%(title)s.%(ext)s'),
+        }
 
-    try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            logger.info(f"Extracting info for URL: {URLS[0]}")
-            info = ydl.extract_info(URLS[0], download=False)
-            title = info['title']
-            logger.info(f"Video title: {title}")
+        try:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(URLS[0], download=True)
+                title = info['title']
+                filename = ydl.prepare_filename(info).rsplit(".", 1)[0] + ".mp3"
+               
+                error_code = ydl.download(URLS[0])
 
-            audio_buffer = io.BytesIO()
-            
-            def download_callback(d):
-                if d['status'] == 'finished':
-                    audio_file = d['filename']
-                    logger.info(f"Download finished, reading file: {audio_file}")
-                    with open(audio_file, 'rb') as f:
-                        audio_buffer.write(f.read())
-            
-            ydl_opts['progress_hooks'] = [download_callback]
-            logger.info("Starting download")
-            ydl.download(URLS)
-            
-            audio_buffer.seek(0)
-            logger.info(f"Audio buffer size: {audio_buffer.getbuffer().nbytes} bytes")
-
-            def iterfile():
-                yield from audio_buffer
-            
-            logger.info("Preparing streaming response")
-            return StreamingResponse(
-                iterfile(),
-                media_type="audio/mpeg",
-                headers={
-                    "Content-Disposition": f'attachment; filename="{title}.mp3"',
-                    "X-YouTube-Title": title
-                }
-            )
-    except Exception as e:
-        logger.error(f"Error occurred: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+                return FileResponse(
+                    filename,
+                    media_type="audio/mpeg",
+                    filename=f"{title}.mp3"
+                )
+                
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
 async def root():
