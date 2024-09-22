@@ -3,11 +3,13 @@ import axios from "axios";
 // If Loading.js and InputComponent.js use named exports:
 import { Loading } from "./Loading.js"; // Use named import
 import { InputComponent } from "./InputComponent.js"; // Use named import
+import { AudioPlayer } from "./AudioPlayer.js";
 
 export const DragAndDrop = () => {
   const [youtubeLink, setYoutubeLink] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDisplaying, setIsDisplaying] = useState(false);
+  const [audioSrc, setAudioSrc] = useState("");
 
   const toggleLoading = () => {
     isLoading ? setIsLoading(false) : setIsLoading(true);
@@ -54,7 +56,8 @@ export const DragAndDrop = () => {
         }
       );
 
-      console.log("Response from backend:", response);
+      console.log("Response from backend:", response.data.file_url);
+      setAudioSrc(`http://127.0.0.1:8000${response.data.file_url}`);
       toggleDisplaying();
     } catch (error) {
       console.error("Error submitting the link:", error);
@@ -73,8 +76,7 @@ export const DragAndDrop = () => {
       {isLoading ? (
         <Loading />
       ) : isDisplaying ? (
-        // <DisplayComponent onReset={handleReset} />
-        <div>Successfull</div>
+        <AudioPlayer src={audioSrc} />
       ) : (
         // InputComponent for entering or dropping the YouTube link
         <InputComponent
@@ -85,6 +87,15 @@ export const DragAndDrop = () => {
           handleSubmit={handleSubmit}
         />
       )}
+      {/* <InputComponent
+        youtubeLink={youtubeLink}
+        handleInputChange={handleInputChange}
+        handleDrop={handleDrop}
+        handleDragOver={handleDragOver}
+        handleSubmit={handleSubmit}
+      />
+      <Loading />
+      <AudioPlayer src={audioSrc} /> */}
     </div>
   );
 };
