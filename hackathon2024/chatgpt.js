@@ -1,7 +1,7 @@
 
 const axios = require('axios');
 
-const openAiToken = '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'; // Replace with your actual API key
+const openAiToken = ''; // Replace with your actual API key
 const title = "rihanna karaoke umbrella"
 
 async function getSongDetails(title) {
