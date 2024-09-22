@@ -45,6 +45,11 @@ async function searchSongs(songName, artistName) {
                       fullTitle.toLowerCase().includes(songName.toLowerCase()) &&
                       fullTitle.toLowerCase().includes(artistName.toLowerCase()) &&
                       !fullTitle.toLowerCase().includes('cover') &&
+                      !fullTitle.toLowerCase().includes('translation') &&
+                      !fullTitle.toLowerCase().includes('annotated') &&
+                      !fullTitle.toLowerCase().includes('album') &&
+                      
+                      
                       !fullTitle.toLowerCase().includes('kidz bop') &&
                       !fullTitle.toLowerCase().includes('genius')
                   ) {
@@ -87,7 +92,7 @@ async function extractLyrics(url) {
   }
 }
 
-searchSongs('Umbrella', 'Rihanna')
+searchSongs('Hello', 'Adele')
   .then(url => {
     if (url) {
       console.log('Found URL:', url); // Log the Genius song URL if found
