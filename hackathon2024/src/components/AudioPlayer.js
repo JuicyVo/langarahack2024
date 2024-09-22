@@ -1,6 +1,4 @@
-import React from 'react';
-
-function MusicPlayer() {
+function AudioPlayer() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="w-2/3">
@@ -62,7 +60,11 @@ function MusicPlayer() {
                 />
               </svg>
             </button>
-            <button type="button" className="hidden sm:block lg:hidden xl:block" aria-label="Previous">
+            <button
+              type="button"
+              className="hidden sm:block lg:hidden xl:block"
+              aria-label="Previous"
+            >
               <svg width="24" height="24" fill="none">
                 <path
                   d="m10 12 8-6v12l-8-6Z"
@@ -129,7 +131,11 @@ function MusicPlayer() {
                 />
               </svg>
             </button>
-            <button type="button" className="hidden sm:block lg:hidden xl:block" aria-label="Next">
+            <button
+              type="button"
+              className="hidden sm:block lg:hidden xl:block"
+              aria-label="Next"
+            >
               <svg width="24" height="24" fill="none">
                 <path
                   d="M14 12 6 6v12l8-6Z"
@@ -155,4 +161,4 @@ function MusicPlayer() {
   );
 }
 
-export default MusicPlayer;
+export default AudioPlayer;
