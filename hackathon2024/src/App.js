@@ -37,7 +37,7 @@ function App() {
 
   return (
     <div className="App">
-      <DragAndDrop />
+      <DragAndDrop lyrics={lyrics} />
       {loading ? <p>Loading...</p> : <pre>{lyrics}</pre>}
     </div>
   );

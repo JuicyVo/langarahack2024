@@ -5,7 +5,7 @@ import { Loading } from "./Loading.js"; // Use named import
 import { InputComponent } from "./InputComponent.js"; // Use named import
 import { AudioPlayer } from "./AudioPlayer.js";
 
-export const DragAndDrop = () => {
+export const DragAndDrop = ({ lyrics }) => {
   const [youtubeLink, setYoutubeLink] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [audioSrc, setAudioSrc] = useState("");
@@ -61,7 +61,10 @@ export const DragAndDrop = () => {
       {isLoading ? (
         <Loading />
       ) : audioSrc ? (
-        <AudioPlayer src={audioSrc} />
+        <>
+          <AudioPlayer src={audioSrc} />
+          <pre>{lyrics}</pre>
+        </>
       ) : (
         <InputComponent
           youtubeLink={youtubeLink}
