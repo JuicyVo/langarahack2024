@@ -1,1 +1,6 @@
-# langarahack2024_Karnbir
+# langarahack2024
+Requirements:
+
+Backend on MacOS:
+pip install audio-separator[cpu] fastapi uvicorn yt-dlp
+brew install ffmpeg
