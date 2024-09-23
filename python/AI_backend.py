@@ -44,7 +44,7 @@ separator = Separator(
     }
 )
 
-separator.load_model(model_filename="UVR-MDX-NET-Inst_HQ_1.onnx")
+separator.load_model(model_filename="UVR-MDX-NET-Inst_HQ_3.onnx")
 
 @app.post("/submit-link")
 async def get_audio(link: YouTubeLink):
